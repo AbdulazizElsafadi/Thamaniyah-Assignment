@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  editor
+}
+
+enum TargetType {
+  program
+  user
+}
+
+enum ProgramStatus {
+  public
+  draft
+  archived
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  name          String
+  email         String          @unique
+  passwordHash  String          @map("password_hash")
+  roles         UsersRoles[]
+  sessions      UsersSessions[]
+  auditLogs     AuditLog[]      @relation("AuditLogsByActor")
+
+  @@map("users")
+}
+
+model UsersRoles {
+  userId Int
+  role   UserRole
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, role])
+  @@map("users_roles")
+}
+
+model UsersSessions {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      Int      @map("user_id")
+  refreshHash String   @map("refresh_hash")
+  createdAt   DateTime @default(now()) @map("created_at")
+  expiresAt   DateTime @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("users_sessions")
+}
+
+model AuditLog {
+  id         BigInt    @id @default(autoincrement()) @map("id")
+  actorId    Int?      @map("actor_id")
+  action     String
+  targetType TargetType @map("target_type")
+  targetId   String?    @map("target_id")
+  meta       Json?
+  ip         String?    @db.Inet
+  ua         String?
+  createdAt  DateTime   @default(now()) @map("created_at")
+
+  actor User? @relation("AuditLogsByActor", fields: [actorId], references: [id])
+
+  @@map("audit_log")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  slug String @unique
+
+  programs Program[]
+
+  @@map("category")
+}
+
+model Program {
+  id               Int            @id @default(autoincrement())
+  slug             String         @unique
+  status           ProgramStatus  @default(draft)
+  title            String
+  description      String?
+  categoryId       Int?           @map("category_id")
+  publicationDate  DateTime?      @map("publication_date")
+  language         String?
+  durationSeconds  Int?           @map("duration_seconds")
+
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  published ProgramPublished?
+
+  @@map("program")
+}
+
+model ProgramPublished {
+  programId       Int     @id @map("program_id")
+  slug            String   @unique
+  title           String
+  description     String?
+  categorySlug    String?  @map("category_slug")
+  language        String?
+  durationSeconds Int?     @map("duration_seconds")
+
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@map("program_published")
+}
+
+

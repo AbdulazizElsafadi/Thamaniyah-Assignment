@@ -1,46 +1,18 @@
-import swaggerJsdoc from 'swagger-jsdoc';
-import { config } from './config';
+import swaggerJSDoc from "swagger-jsdoc";
+import path from "path";
 
-// Swagger configuration
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: config.swagger.title,
-      version: config.swagger.version,
-      description: config.swagger.description,
-      contact: config.swagger.contact,
-      license: config.swagger.license
-    },
-    servers: [
-      {
-        url: `http://localhost:${config.port}`,
-        description: 'Development server'
-      }
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT'
-        }
-      }
-    },
-    security: [
-      {
-        bearerAuth: []
-      }
-    ]
+const swaggerDefinition = {
+  openapi: "3.0.0",
+  info: {
+    title: "My API",
+    version: "1.0.0",
+    description: "My API Description",
   },
-  apis: [
-    './src/app.ts',
-    './src/routes/*.ts'
-    // Add this back when you create controller files:
-    // './src/controllers/*.ts'
-  ]
 };
-
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
+const options = {
+  swaggerDefinition,
+  apis: [path.join(__dirname, "../routes/*.ts")], // Path to the API routes in your Node.js application
+};
+const swaggerSpec = swaggerJSDoc(options);
 
 export default swaggerSpec;
