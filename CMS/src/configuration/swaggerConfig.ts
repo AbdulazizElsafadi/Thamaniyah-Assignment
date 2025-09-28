@@ -8,6 +8,17 @@ const swaggerDefinition = {
     version: "1.0.0",
     description: "My API Description",
   },
+  components: {
+    securitySchemes: {
+      BearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description: "Enter JWT access token",
+      },
+    },
+  },
+  security: [{ BearerAuth: [] }],
 };
 const options = {
   swaggerDefinition,

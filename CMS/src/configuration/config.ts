@@ -21,8 +21,12 @@ const config = {
   // JWT Configuration (to be added when authentication is implemented)
   jwt: {
     secret: process.env["JWT_SECRET"] || "your_jwt_secret_key",
-    expiresIn: process.env["JWT_EXPIRES_IN"] || "24h",
-    refreshExpiresIn: process.env["REFRESH_TOKEN_EXPIRES_IN"] || "7d",
+    // values expected in seconds
+    expiresIn: parseInt(process.env["JWT_EXPIRES_IN"] || "86400", 10),
+    refreshExpiresIn: parseInt(
+      process.env["REFRESH_TOKEN_EXPIRES_IN"] || "604800",
+      10
+    ),
   },
 };
 

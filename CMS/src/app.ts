@@ -7,7 +7,10 @@ import swaggerUI from "swagger-ui-express";
 import config from "./configuration/config";
 
 // Import routes
+import authRoutes from "./routes/authRoutes";
 import exampleRoutes from "./routes/exampleRoutes";
+import usersRoutes from "./routes/usersRoutes";
+import { seedInitialUser } from "./utils/seed";
 
 // Create Express app
 const app: Application = express();
@@ -29,6 +32,11 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // // Logging middleware
 app.use(morgan("combined"));
+
+// Use example routes
+app.use("/api", exampleRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", usersRoutes);
 
 /**
  * @swagger
@@ -108,10 +116,13 @@ app.get("/", (_req: Request, res: Response) => {
 //   explorer: true,
 //   customSiteTitle: 'CMS API Documentation'
 // }));
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-
-// Use example routes
-app.use("/api", exampleRoutes);
+app.use(
+  "/api-docs",
+  swaggerUI.serve,
+  swaggerUI.setup(swaggerSpec, {
+    swaggerOptions: { persistAuthorization: true },
+  })
+);
 
 // // Also serve Swagger UI at the root swagger path
 app.get("/swagger/", (_req: Request, res: Response) => {
@@ -141,7 +152,6 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // Start server
-
 const port = config.port;
 
 app.listen(port, async () => {
@@ -151,6 +161,12 @@ app.listen(port, async () => {
   );
   console.log(`🏥 Health check available at http://localhost:${port}/health`);
   console.log(`🌍 Environment: ${config.nodeEnv}`);
+  try {
+    await seedInitialUser();
+    console.log("🌱 Seed: ensured test user exists");
+  } catch (err) {
+    console.error("Seed error", err);
+  }
 });
 
 export default app;
