@@ -38,36 +38,3 @@ CREATE TABLE IF NOT EXISTS audit_log (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Category
-CREATE TABLE IF NOT EXISTS category (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL UNIQUE,
-  slug TEXT NOT NULL UNIQUE
-);
-
--- Program
-CREATE TYPE IF NOT EXISTS program_status AS ENUM ('public', 'draft', 'archived');
-CREATE TABLE IF NOT EXISTS program (
-  id SERIAL PRIMARY KEY,
-  slug TEXT NOT NULL UNIQUE,
-  status program_status NOT NULL DEFAULT 'draft',
-  title TEXT NOT NULL,
-  description TEXT,
-  category_id INTEGER REFERENCES category(id) ON DELETE SET NULL,
-  publication_date DATE,
-  language TEXT,
-  duration_seconds INTEGER
-);
-
--- Program Published (materialized copy of public programs)
-CREATE TABLE IF NOT EXISTS program_published (
-  program_id INTEGER PRIMARY KEY REFERENCES program(id) ON DELETE CASCADE,
-  slug TEXT NOT NULL UNIQUE,
-  title TEXT NOT NULL,
-  description TEXT,
-  category_slug TEXT,
-  language TEXT,
-  duration_seconds INTEGER
-);
-
-

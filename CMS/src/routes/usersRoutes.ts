@@ -25,7 +25,7 @@ const router = Router();
  *     summary: List users, admin access
  *     description: Get a list of all users. Requires admin role.
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: List of users
@@ -44,7 +44,7 @@ router.get("/", requireAuth, requireRole("admin"), listUsers);
  *     summary: Get user by id, admin access
  *     description: Get a specific user by ID. Requires admin role.
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -69,7 +69,7 @@ router.get("/", requireAuth, requireRole("admin"), listUsers);
  *     summary: Get current authenticated user, authenticated user access
  *     description: Get the current authenticated user's information. Requires authentication only.
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Current user
@@ -88,7 +88,7 @@ router.get("/:id", requireAuth, requireRole("admin"), getUser);
  *     summary: Replace roles for a user, admin access
  *     description: Update user roles. Requires admin role.
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -126,7 +126,7 @@ router.put("/:id/roles", requireAuth, requireRole("admin"), setUserRoles);
  *     summary: Create a user, admin access
  *     description: Create a new user. Requires admin role.
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

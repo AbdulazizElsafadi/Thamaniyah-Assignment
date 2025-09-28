@@ -8,8 +8,9 @@ import config from "./configuration/config";
 
 // Import routes
 import authRoutes from "./routes/authRoutes";
-import exampleRoutes from "./routes/exampleRoutes";
 import usersRoutes from "./routes/usersRoutes";
+import programsRoutes from "./routes/programsRoutes";
+import categoriesRoutes from "./routes/categoriesRoutes";
 import { seedInitialUser } from "./utils/seed";
 
 // Create Express app
@@ -34,9 +35,10 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(morgan("combined"));
 
 // Use example routes
-app.use("/api", exampleRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/programs", programsRoutes);
+app.use("/api/categories", categoriesRoutes);
 
 /**
  * @swagger
