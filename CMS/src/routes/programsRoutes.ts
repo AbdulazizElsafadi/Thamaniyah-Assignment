@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireAuth } from "../middleware/auth";
+import { requireAuth, requireRole } from "../middleware/auth";
 import {
   listPrograms,
   getProgram,
@@ -8,6 +8,7 @@ import {
   publishProgram,
   archiveProgram,
 } from "../controllers/programsController";
+import { importProgramsBySource } from "../controllers/importController";
 
 const router = Router();
 
@@ -511,5 +512,44 @@ router.post("/:id/publish", requireAuth, publishProgram);
  *         description: Internal server error
  */
 router.post("/:id/archive", requireAuth, archiveProgram);
+
+/**
+ * @swagger
+ * /api/programs/import/{source}:
+ *   post:
+ *     tags: [Programs]
+ *     summary: Import programs from a , admin only.
+ *     description: Currently only supports source = rss. Admin only.
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: source
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: rss
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               feedUrl:
+ *                 type: string
+ *                 description: RSS feed URL when source=rss
+ *     responses:
+ *       200:
+ *         description: Import summary
+ *       400:
+ *         description: Source not implemented or invalid payload
+ */
+router.post(
+  "/import/:source",
+  requireAuth,
+  requireRole("admin"),
+  importProgramsBySource
+);
 
 export default router;
