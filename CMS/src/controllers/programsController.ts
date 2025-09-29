@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PrismaClient, ProgramStatus } from "@prisma/client";
+import { PrismaClient, ProgramStatus, TargetType } from "@prisma/client";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
@@ -461,6 +461,25 @@ export async function publishProgram(req: Request, res: Response) {
         },
       });
 
+      // Insert audit log for publish action
+      {
+        const auditData: any = {
+          action: "program.publish",
+          targetType: TargetType.program,
+          targetId: String(id),
+          meta: {
+            slug: program.slug,
+            previousStatus: program.status,
+            newStatus: ProgramStatus.public,
+          },
+        };
+        if (req.user?.id !== undefined) auditData.actorId = req.user.id;
+        if (req.ip) auditData.ip = req.ip;
+        const ua = req.headers["user-agent"];
+        if (typeof ua === "string") auditData.ua = ua;
+        await tx.auditLog.create({ data: auditData });
+      }
+
       return updatedProgram;
     });
 
@@ -532,6 +551,25 @@ export async function archiveProgram(req: Request, res: Response) {
       await tx.programPublished.deleteMany({
         where: { programId: id },
       });
+
+      // Insert audit log for archive action
+      {
+        const auditData: any = {
+          action: "program.archive",
+          targetType: TargetType.program,
+          targetId: String(id),
+          meta: {
+            slug: program.slug,
+            previousStatus: program.status,
+            newStatus: ProgramStatus.archived,
+          },
+        };
+        if (req.user?.id !== undefined) auditData.actorId = req.user.id;
+        if (req.ip) auditData.ip = req.ip;
+        const ua = req.headers["user-agent"];
+        if (typeof ua === "string") auditData.ua = ua;
+        await tx.auditLog.create({ data: auditData });
+      }
 
       return updatedProgram;
     });

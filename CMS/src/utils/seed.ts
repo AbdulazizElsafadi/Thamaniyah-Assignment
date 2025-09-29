@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 export async function seedInitialUser(): Promise<void> {
-  const email = "test@gmail.com";
+  const email = "user@example.com";
   const existing = await prisma.user.findUnique({
     where: { email },
     include: { roles: true },
@@ -26,7 +26,7 @@ export async function seedInitialUser(): Promise<void> {
     return;
   }
 
-  const passwordHash = await bcrypt.hash("Ss@123456", 12);
+  const passwordHash = await bcrypt.hash("string", 12);
   const user = await prisma.user.create({
     data: {
       name: "Test User",
