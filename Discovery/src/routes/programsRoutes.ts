@@ -17,6 +17,13 @@ const router = Router();
  *     tags: [Programs]
  *     summary: Get program by ID
  *     description: Get a specific program by its ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Program ID
  */
 router.get("/programs/:id", getProgramById);
 
