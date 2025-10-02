@@ -4,21 +4,21 @@ import path from "path";
 const swaggerDefinition = {
   openapi: "3.0.0",
   info: {
-    title: "CMS API",
+    title: "Discovery API",
     version: "1.0.0",
-    description: "CMS API Description",
+    description: "Discovery API Description",
   },
-  components: {
-    securitySchemes: {
-      BearerAuth: {
-        type: "http",
-        scheme: "bearer",
-        bearerFormat: "JWT",
-        description: "Enter JWT access token",
-      },
-    },
-  },
-  security: [{ BearerAuth: [] }],
+  // components: {
+  //   securitySchemes: {
+  //     BearerAuth: {
+  //       type: "http",
+  //       scheme: "bearer",
+  //       bearerFormat: "JWT",
+  //       description: "Enter JWT access token",
+  //     },
+  //   },
+  // },
+  // security: [{ BearerAuth: [] }],
 };
 const options = {
   swaggerDefinition,

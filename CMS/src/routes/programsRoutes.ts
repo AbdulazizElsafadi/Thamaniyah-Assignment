@@ -518,7 +518,7 @@ router.post("/:id/archive", requireAuth, archiveProgram);
  * /api/programs/import/{source}:
  *   post:
  *     tags: [Programs]
- *     summary: Import programs from a , admin only.
+ *     summary: Import programs from a source, admin only.
  *     description: Currently only supports source = rss. Admin only.
  *     security:
  *       - BearerAuth: []

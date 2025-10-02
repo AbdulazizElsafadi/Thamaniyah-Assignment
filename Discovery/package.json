@@ -1,0 +1,37 @@
+{
+  "name": "discovery",
+  "version": "1.0.0",
+  "description": "search engine service",
+  "license": "ISC",
+  "author": "Abdulaziz Alsafadi",
+  "type": "commonjs",
+  "main": "app.ts",
+  "scripts": {
+    "test": "test",
+    "start": "node dist/app.js",
+    "dev": "nodemon --watch src --ext ts,js,json --ignore \"src/**/*.spec.ts\" --exec \"ts-node --transpile-only src/app.ts\"",
+    "build": "tsc",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "prisma": "^6.16.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
